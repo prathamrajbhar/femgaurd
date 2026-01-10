@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 import '../utils/app_theme.dart';
 import '../utils/constants.dart';
+import '../widgets/pcod_awareness_card.dart';
 
 /// Modern AI Health Insights screen
 class InsightsScreen extends StatelessWidget {
@@ -40,6 +41,10 @@ class InsightsScreen extends StatelessWidget {
                       _SectionHeader(title: 'Analysis Summary', icon: Icons.analytics_rounded),
                       const SizedBox(height: 14),
                       _AnalysisSummary(),
+                      const SizedBox(height: 28),
+                      
+                      // PCOD/PCOS Awareness Section
+                      const PCODAwarenessCard(),
                       const SizedBox(height: 28),
                       
                       // Educational Content

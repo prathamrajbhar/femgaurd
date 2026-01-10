@@ -1,3 +1,6 @@
+/// Acne severity levels for PCOD awareness tracking
+enum AcneSeverity { none, mild, severe }
+
 /// Symptom logging model for tracking pain, mood, and fatigue
 class SymptomLog {
   final DateTime date;
@@ -5,6 +8,12 @@ class SymptomLog {
   final int moodLevel; // 0-10
   final int fatigueLevel; // 0-10
   final String notes;
+  
+  // Optional PCOD/PCOS awareness fields
+  final bool? hasAcne;
+  final AcneSeverity? acneSeverity;
+  final bool? excessHairGrowth;
+  final bool? weightGain;
 
   SymptomLog({
     required this.date,
@@ -12,6 +21,10 @@ class SymptomLog {
     this.moodLevel = 5,
     this.fatigueLevel = 0,
     this.notes = '',
+    this.hasAcne,
+    this.acneSeverity,
+    this.excessHairGrowth,
+    this.weightGain,
   });
 
   /// Calculate average symptom severity
@@ -23,6 +36,10 @@ class SymptomLog {
     int? moodLevel,
     int? fatigueLevel,
     String? notes,
+    bool? hasAcne,
+    AcneSeverity? acneSeverity,
+    bool? excessHairGrowth,
+    bool? weightGain,
   }) {
     return SymptomLog(
       date: date ?? this.date,
@@ -30,6 +47,10 @@ class SymptomLog {
       moodLevel: moodLevel ?? this.moodLevel,
       fatigueLevel: fatigueLevel ?? this.fatigueLevel,
       notes: notes ?? this.notes,
+      hasAcne: hasAcne ?? this.hasAcne,
+      acneSeverity: acneSeverity ?? this.acneSeverity,
+      excessHairGrowth: excessHairGrowth ?? this.excessHairGrowth,
+      weightGain: weightGain ?? this.weightGain,
     );
   }
 
@@ -41,6 +62,10 @@ class SymptomLog {
       'moodLevel': moodLevel,
       'fatigueLevel': fatigueLevel,
       'notes': notes,
+      'hasAcne': hasAcne,
+      'acneSeverity': acneSeverity?.index,
+      'excessHairGrowth': excessHairGrowth,
+      'weightGain': weightGain,
     };
   }
 
@@ -52,6 +77,12 @@ class SymptomLog {
       moodLevel: json['moodLevel'] as int? ?? 5,
       fatigueLevel: json['fatigueLevel'] as int? ?? 0,
       notes: json['notes'] as String? ?? '',
+      hasAcne: json['hasAcne'] as bool?,
+      acneSeverity: json['acneSeverity'] != null
+          ? AcneSeverity.values[json['acneSeverity'] as int]
+          : null,
+      excessHairGrowth: json['excessHairGrowth'] as bool?,
+      weightGain: json['weightGain'] as bool?,
     );
   }
 }

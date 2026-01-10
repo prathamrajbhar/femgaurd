@@ -18,6 +18,12 @@ class _SymptomLoggingScreenState extends State<SymptomLoggingScreen> {
   double _moodLevel = 5;
   double _fatigueLevel = 0;
   String _notes = '';
+  
+  // PCOD awareness fields
+  bool _hasAcne = false;
+  bool _hasSevereAcne = false;
+  bool _hasExcessHairGrowth = false;
+  bool _hasWeightGain = false;
 
   // Quick symptom selection
   final List<String> _selectedSymptoms = [];
@@ -66,6 +72,12 @@ class _SymptomLoggingScreenState extends State<SymptomLoggingScreen> {
       moodLevel: _moodLevel.round(),
       fatigueLevel: _fatigueLevel.round(),
       notes: allNotes,
+      hasAcne: _hasAcne ? true : null,
+      acneSeverity: _hasAcne 
+          ? (_hasSevereAcne ? AcneSeverity.severe : AcneSeverity.mild) 
+          : null,
+      excessHairGrowth: _hasExcessHairGrowth ? true : null,
+      weightGain: _hasWeightGain ? true : null,
     );
     
     context.read<AppState>().addSymptomLog(log);
@@ -214,6 +226,19 @@ class _SymptomLoggingScreenState extends State<SymptomLoggingScreen> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 28),
+                    
+                    // PCOD Awareness Section
+                    _SectionLabel(title: 'Hormonal Health Tracking'),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Optional indicators for pattern analysis',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.textLight,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildHormonalHealthCard(),
                   ],
                 ),
               ),
@@ -357,6 +382,106 @@ class _SymptomLoggingScreenState extends State<SymptomLoggingScreen> {
     if (value <= 6) return 'Normal';
     if (value <= 8) return 'Tired';
     return 'Exhausted';
+  }
+
+  Widget _buildHormonalHealthCard() {
+    final theme = Theme.of(context);
+    
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        boxShadow: AppColors.softShadow,
+      ),
+      child: Column(
+        children: [
+          // Acne toggle
+          _HormonalToggleItem(
+            icon: Icons.face_outlined,
+            emoji: '🔴',
+            title: 'Acne',
+            subtitle: 'Skin breakouts or blemishes',
+            isEnabled: _hasAcne,
+            onChanged: (value) {
+              HapticFeedback.selectionClick();
+              setState(() {
+                _hasAcne = value;
+                if (!value) _hasSevereAcne = false;
+              });
+            },
+          ),
+          if (_hasAcne) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Divider(color: AppColors.divider, height: 1),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(56, 8, 16, 12),
+              child: Row(
+                children: [
+                  Text(
+                    'Severity:',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  _SeverityChip(
+                    label: 'Mild',
+                    isSelected: !_hasSevereAcne,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      setState(() => _hasSevereAcne = false);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  _SeverityChip(
+                    label: 'Severe',
+                    isSelected: _hasSevereAcne,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      setState(() => _hasSevereAcne = true);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(color: AppColors.divider, height: 1),
+          ),
+          // Excess hair growth toggle
+          _HormonalToggleItem(
+            icon: Icons.grass_outlined,
+            emoji: '🌿',
+            title: 'Unusual Hair Growth',
+            subtitle: 'Excess facial or body hair',
+            isEnabled: _hasExcessHairGrowth,
+            onChanged: (value) {
+              HapticFeedback.selectionClick();
+              setState(() => _hasExcessHairGrowth = value);
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(color: AppColors.divider, height: 1),
+          ),
+          // Weight gain toggle
+          _HormonalToggleItem(
+            icon: Icons.monitor_weight_outlined,
+            emoji: '⚖️',
+            title: 'Unexplained Weight Gain',
+            subtitle: 'Recent weight changes',
+            isEnabled: _hasWeightGain,
+            onChanged: (value) {
+              HapticFeedback.selectionClick();
+              setState(() => _hasWeightGain = value);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -515,6 +640,128 @@ class _ModernSliderCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Hormonal health toggle item
+class _HormonalToggleItem extends StatelessWidget {
+  final IconData icon;
+  final String emoji;
+  final String title;
+  final String subtitle;
+  final bool isEnabled;
+  final ValueChanged<bool> onChanged;
+
+  const _HormonalToggleItem({
+    required this.icon,
+    required this.emoji,
+    required this.title,
+    required this.subtitle,
+    required this.isEnabled,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return InkWell(
+      onTap: () => onChanged(!isEnabled),
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: isEnabled 
+                    ? theme.colorScheme.primaryContainer
+                    : AppColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
+              child: Center(
+                child: Text(emoji, style: const TextStyle(fontSize: 18)),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppColors.textLight,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch.adaptive(
+              value: isEnabled,
+              onChanged: onChanged,
+              activeTrackColor: theme.colorScheme.primary,
+              activeThumbColor: theme.colorScheme.onPrimary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Severity selection chip
+class _SeverityChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _SeverityChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: AppDurations.fast,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected 
+              ? theme.colorScheme.primary 
+              : AppColors.surfaceVariant,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          border: Border.all(
+            color: isSelected 
+                ? theme.colorScheme.primary 
+                : AppColors.border,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: isSelected 
+                ? theme.colorScheme.onPrimary 
+                : AppColors.textSecondary,
+          ),
+        ),
       ),
     );
   }
