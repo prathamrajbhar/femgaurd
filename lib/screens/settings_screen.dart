@@ -25,69 +25,16 @@ class SettingsScreen extends StatelessWidget {
                   delegate: SliverChildListDelegate([
                     // Profile Card
                     _ProfileCard(appState: appState),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 24),
                     
-                    // Appearance
+                    // Quick Access - Most used features
                     _SettingsSection(
-                      title: 'Appearance',
-                      children: [
-                        _ThemeTile(
-                          currentTheme: appState.selectedTheme,
-                          onTap: () => _showThemePicker(context, appState),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    
-                    // Notifications
-                    _SettingsSection(
-                      title: 'Notifications',
-                      children: [
-                        _ToggleTile(
-                          icon: Icons.notifications_active_rounded,
-                          title: 'Push Notifications',
-                          subtitle: 'Period reminders and insights',
-                          value: appState.notificationsEnabled,
-                          onChanged: (_) => appState.toggleNotifications(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    
-                    // Privacy
-                    _SettingsSection(
-                      title: 'Privacy & Data',
-                      children: [
-                        _SettingsTile(
-                          icon: Icons.lock_rounded,
-                          title: 'Data Storage',
-                          subtitle: 'All data stored locally',
-                          trailing: _StatusBadge(label: 'Secure', color: AppColors.statusGreen),
-                        ),
-                        _SettingsTile(
-                          icon: Icons.description_rounded,
-                          title: 'Terms & Consent',
-                          subtitle: 'View app disclaimer',
-                          onTap: () => _showConsentDialog(context),
-                        ),
-                        _SettingsTile(
-                          icon: Icons.download_rounded,
-                          title: 'Export Data',
-                          subtitle: 'Download your health data',
-                          onTap: () => _showSnackBar(context, 'Data exported successfully!'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    
-                    // Profile & Data
-                    _SettingsSection(
-                      title: 'Profile',
+                      title: 'Quick Access',
                       children: [
                         _SettingsTile(
                           icon: Icons.edit_rounded,
                           title: 'Edit Profile',
-                          subtitle: 'Update your health information',
+                          subtitle: 'Update your health info',
                           onTap: () => Navigator.pushNamed(context, '/profile-edit'),
                         ),
                         _SettingsTile(
@@ -98,77 +45,74 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     
-                    // Reminders
+                    // Settings - Theme & Notifications
                     _SettingsSection(
-                      title: 'Reminders',
+                      title: 'Settings',
                       children: [
-                        _SettingsTile(
-                          icon: Icons.alarm_rounded,
-                          title: 'Manage Reminders',
-                          subtitle: 'Period, symptoms, pills & more',
-                          onTap: () => Navigator.pushNamed(context, '/reminders'),
+                        _ThemeTile(
+                          currentTheme: appState.selectedTheme,
+                          onTap: () => _showThemePicker(context, appState),
+                        ),
+                        _ToggleTile(
+                          icon: Icons.notifications_active_rounded,
+                          title: 'Notifications',
+                          subtitle: 'Period reminders & insights',
+                          value: appState.notificationsEnabled,
+                          onChanged: (_) => appState.toggleNotifications(),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     
-                    // Support
+                    // History & Data
+                    _SettingsSection(
+                      title: 'History & Data',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.psychology_rounded,
+                          title: 'Symptom History',
+                          subtitle: 'View past symptom logs',
+                          onTap: () => Navigator.pushNamed(context, '/symptom-history'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.timeline_rounded,
+                          title: 'Cycle History',
+                          subtitle: 'View past cycles',
+                          onTap: () => Navigator.pushNamed(context, '/cycle-history'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.download_rounded,
+                          title: 'Export Data',
+                          subtitle: 'Download your data',
+                          onTap: () => _showSnackBar(context, 'Data exported successfully!'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Support & Info
                     _SettingsSection(
                       title: 'Support',
                       children: [
                         _SettingsTile(
                           icon: Icons.help_outline_rounded,
                           title: 'Help & FAQ',
-                          subtitle: 'Get answers to common questions',
+                          subtitle: 'Get answers',
                           onTap: () => Navigator.pushNamed(context, '/help'),
                         ),
                         _SettingsTile(
-                          icon: Icons.lightbulb_outline_rounded,
-                          title: 'Health Tips',
-                          subtitle: 'Articles and wellness tips',
-                          onTap: () => Navigator.pushNamed(context, '/health-tips'),
+                          icon: Icons.emergency_rounded,
+                          title: 'Emergency Contacts',
+                          subtitle: 'Quick access helplines',
+                          onTap: () => Navigator.pushNamed(context, '/emergency-contacts'),
                         ),
                         _SettingsTile(
                           icon: Icons.info_outline_rounded,
                           title: 'About',
-                          subtitle: 'App info, privacy & terms',
+                          subtitle: 'App info & privacy',
                           onTap: () => Navigator.pushNamed(context, '/about'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    
-                    // History
-                    _SettingsSection(
-                      title: 'History',
-                      children: [
-                        _SettingsTile(
-                          icon: Icons.psychology_rounded,
-                          title: 'Symptom History',
-                          subtitle: 'View your past symptom logs',
-                          onTap: () => Navigator.pushNamed(context, '/symptom-history'),
-                        ),
-                        _SettingsTile(
-                          icon: Icons.timeline_rounded,
-                          title: 'Cycle History',
-                          subtitle: 'View your past cycles',
-                          onTap: () => Navigator.pushNamed(context, '/cycle-history'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    
-                    // Emergency
-                    _SettingsSection(
-                      title: 'Emergency',
-                      children: [
-                        _SettingsTile(
-                          icon: Icons.emergency_rounded,
-                          title: 'Emergency Contacts',
-                          subtitle: 'Quick access to helplines & contacts',
-                          onTap: () => Navigator.pushNamed(context, '/emergency-contacts'),
                         ),
                       ],
                     ),
