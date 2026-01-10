@@ -1,7 +1,7 @@
 /// App-wide constants and configuration
 class AppConstants {
   // App info
-  static const String appName = 'HerHealth';
+  static const String appName = 'FemGuard';
   static const String appTagline = 'Your Menstrual & Hormonal Health Guardian';
 
   // Default values

@@ -24,8 +24,19 @@ import 'screens/doctor_suggestion_screen.dart';
 import 'screens/reports_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/notifications_screen.dart';
+import 'screens/profile_edit_screen.dart';
+import 'screens/calendar_screen.dart';
+import 'screens/help_screen.dart';
+import 'screens/about_screen.dart';
+import 'screens/reminders_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/symptom_history_screen.dart';
+import 'screens/cycle_history_screen.dart';
+import 'screens/health_tips_screen.dart';
+import 'screens/emergency_contacts_screen.dart';
 
-/// Main entry point for the HerHealth app
+/// Main entry point for the FemGuard app
 /// A Menstrual & Hormonal Health Guardian Application
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,14 +59,14 @@ void main() async {
   final appState = AppState();
   await appState.initialize();
   
-  runApp(HerHealthApp(appState: appState));
+  runApp(FemGuardApp(appState: appState));
 }
 
 /// Root application widget
-class HerHealthApp extends StatelessWidget {
+class FemGuardApp extends StatelessWidget {
   final AppState appState;
   
-  const HerHealthApp({super.key, required this.appState});
+  const FemGuardApp({super.key, required this.appState});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +75,7 @@ class HerHealthApp extends StatelessWidget {
       child: Consumer<AppState>(
         builder: (context, appState, child) {
           return MaterialApp(
-            title: 'HerHealth',
+            title: 'FemGuard',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.getThemeData(appState.selectedTheme),
             initialRoute: '/splash',
@@ -84,6 +95,17 @@ class HerHealthApp extends StatelessWidget {
               '/reports': (context) => const ReportsScreen(),
               '/chat': (context) => const ChatScreen(),
               '/settings': (context) => const SettingsScreen(),
+              '/notifications': (context) => const NotificationsScreen(),
+              '/profile-edit': (context) => const ProfileEditScreen(),
+              '/calendar': (context) => const CalendarScreen(),
+              '/help': (context) => const HelpScreen(),
+              '/about': (context) => const AboutScreen(),
+              '/reminders': (context) => const RemindersScreen(),
+              '/profile': (context) => const ProfileScreen(),
+              '/symptom-history': (context) => const SymptomHistoryScreen(),
+              '/cycle-history': (context) => const CycleHistoryScreen(),
+              '/health-tips': (context) => const HealthTipsScreen(),
+              '/emergency-contacts': (context) => const EmergencyContactsScreen(),
             },
           );
         },
@@ -91,3 +113,4 @@ class HerHealthApp extends StatelessWidget {
     );
   }
 }
+

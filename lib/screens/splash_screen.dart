@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../services/app_state.dart';
 import '../utils/app_theme.dart';
 import '../utils/constants.dart';
 
@@ -72,12 +74,40 @@ class _SplashScreenState extends State<SplashScreen>
       _contentController.forward();
     });
 
-    // Navigate to onboarding
-    Future.delayed(const Duration(milliseconds: 2800), () {
+    // Navigate based on user state
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/onboarding');
+        _navigateToNextScreen();
       }
     });
+  }
+
+  void _navigateToNextScreen() {
+    final appState = context.read<AppState>();
+    
+    String route;
+    
+    // Check if user has completed the full setup process
+    final hasCompletedSetup = appState.userProfile.hasCompletedOnboarding && 
+                               appState.userProfile.hasAcceptedConsent;
+    
+    if (!hasCompletedSetup) {
+      // First time user or incomplete setup - check where to resume
+      if (!appState.userProfile.hasAcceptedConsent) {
+        route = '/onboarding';
+      } else {
+        route = '/profile-setup';
+      }
+    } else {
+      // Returning user - go to home
+      // If no cycle data exists, initialize with demo data for UI purposes
+      if (appState.cycleHistory.isEmpty) {
+        appState.initializeDummyData();
+      }
+      route = '/home';
+    }
+    
+    Navigator.of(context).pushReplacementNamed(route);
   }
 
   @override
@@ -98,12 +128,12 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFFDF2F4),
+              const Color(0xFFFDF2F4),
               AppColors.background,
-              Color(0xFFF0F7FA),
+              const Color(0xFFF0F7FA),
               AppColors.background,
             ],
-            stops: [0.0, 0.3, 0.7, 1.0],
+            stops: const [0.0, 0.3, 0.7, 1.0],
           ),
         ),
         child: Stack(
@@ -242,7 +272,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Loading...',
+                            'Loading your data...',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: AppColors.textSecondary,
                                 ),

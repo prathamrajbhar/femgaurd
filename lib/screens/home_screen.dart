@@ -78,8 +78,8 @@ class _NavItem {
   _NavItem({required this.icon, required this.activeIcon, required this.label});
 }
 
-/// Modern bottom navigation bar with glassmorphism
-class _ModernBottomNav extends StatelessWidget {
+/// Modern floating bottom navigation bar with glassmorphism and animations
+class _ModernBottomNav extends StatefulWidget {
   final List<_NavItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -91,82 +91,177 @@ class _ModernBottomNav extends StatelessWidget {
   });
 
   @override
+  State<_ModernBottomNav> createState() => _ModernBottomNavState();
+}
+
+class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderStateMixin {
+  late List<AnimationController> _scaleControllers;
+  late List<Animation<double>> _scaleAnimations;
+
+  @override
+  void initState() {
+    super.initState();
+    _scaleControllers = List.generate(
+      widget.items.length,
+      (index) => AnimationController(
+        duration: const Duration(milliseconds: 150),
+        vsync: this,
+      ),
+    );
+    _scaleAnimations = _scaleControllers.map((controller) {
+      return Tween<double>(begin: 1.0, end: 0.9).animate(
+        CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+      );
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _scaleControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onTapDown(int index) {
+    _scaleControllers[index].forward();
+  }
+
+  void _onTapUp(int index) {
+    _scaleControllers[index].reverse();
+    widget.onTap(index);
+  }
+
+  void _onTapCancel(int index) {
+    _scaleControllers[index].reverse();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 24,
-            offset: const Offset(0, -8),
-          ),
-        ],
+        color: Colors.transparent,
       ),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(items.length, (index) {
-              final isSelected = index == currentIndex;
-              final item = items[index];
-              
-              return GestureDetector(
-                onTap: () => onTap(index),
-                behavior: HitTestBehavior.opaque,
-                child: AnimatedContainer(
-                  duration: AppDurations.fast,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isSelected ? 20 : 16,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: isSelected 
-                        ? LinearGradient(
-                            colors: [
-                              AppColors.primary.withValues(alpha: 0.15),
-                              AppColors.primaryLight.withValues(alpha: 0.1),
-                            ],
-                          )
-                        : null,
-                    borderRadius: BorderRadius.circular(AppRadius.lg),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AnimatedContainer(
-                        duration: AppDurations.fast,
-                        padding: isSelected ? const EdgeInsets.all(2) : EdgeInsets.zero,
-                        decoration: BoxDecoration(
-                          gradient: isSelected 
-                              ? LinearGradient(colors: [AppColors.primary, AppColors.primaryDark])
-                              : null,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          isSelected ? item.activeIcon : item.icon,
-                          color: isSelected ? Colors.white : AppColors.textLight,
-                          size: isSelected ? 20 : 24,
-                        ),
-                      ),
-                      if (isSelected) ...[
-                        const SizedBox(width: 10),
-                        Text(
-                          item.label,
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                // Main shadow
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 32,
+                  offset: const Offset(0, 8),
+                  spreadRadius: 0,
                 ),
-              );
-            }),
+                // Subtle inner glow
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.05),
+                  blurRadius: 40,
+                  offset: const Offset(0, -4),
+                  spreadRadius: -8,
+                ),
+              ],
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.08),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(widget.items.length, (index) {
+                final isSelected = index == widget.currentIndex;
+                final item = widget.items[index];
+                
+                return GestureDetector(
+                  onTapDown: (_) => _onTapDown(index),
+                  onTapUp: (_) => _onTapUp(index),
+                  onTapCancel: () => _onTapCancel(index),
+                  behavior: HitTestBehavior.opaque,
+                  child: ScaleTransition(
+                    scale: _scaleAnimations[index],
+                    child: AnimatedContainer(
+                      duration: AppDurations.normal,
+                      curve: Curves.easeOutCubic,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isSelected ? 20 : 14,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: isSelected 
+                            ? LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.primaryDark,
+                                ],
+                              )
+                            : null,
+                        color: isSelected ? null : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: isSelected ? [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.4),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
+                            spreadRadius: -2,
+                          ),
+                          BoxShadow(
+                            color: AppColors.primaryDark.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ] : null,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Icon with enhanced styling
+                          AnimatedContainer(
+                            duration: AppDurations.fast,
+                            child: Icon(
+                              isSelected ? item.activeIcon : item.icon,
+                              color: isSelected 
+                                  ? Colors.white 
+                                  : AppColors.textLight,
+                              size: isSelected ? 22 : 24,
+                            ),
+                          ),
+                          // Animated label for selected item
+                          AnimatedSize(
+                            duration: AppDurations.normal,
+                            curve: Curves.easeOutCubic,
+                            child: SizedBox(
+                              width: isSelected ? null : 0,
+                              child: isSelected ? Row(
+                                children: [
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    item.label,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ) : const SizedBox.shrink(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
           ),
         ),
       ),
@@ -221,7 +316,7 @@ class _DashboardPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'HerHealth',
+                          'FemGuard',
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontWeight: FontWeight.bold,

@@ -80,22 +80,103 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     
-                    // Danger Zone
-                    _DangerCard(
-                      onTap: () => _showDeleteConfirmation(context, appState),
+                    // Profile & Data
+                    _SettingsSection(
+                      title: 'Profile',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.edit_rounded,
+                          title: 'Edit Profile',
+                          subtitle: 'Update your health information',
+                          onTap: () => Navigator.pushNamed(context, '/profile-edit'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.calendar_month_rounded,
+                          title: 'Cycle Calendar',
+                          subtitle: 'View full calendar',
+                          onTap: () => Navigator.pushNamed(context, '/calendar'),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
                     
-                    // About
+                    // Reminders
                     _SettingsSection(
-                      title: 'About',
+                      title: 'Reminders',
                       children: [
                         _SettingsTile(
-                          icon: Icons.info_rounded,
-                          title: AppConstants.appName,
-                          subtitle: 'Version 1.0.0',
+                          icon: Icons.alarm_rounded,
+                          title: 'Manage Reminders',
+                          subtitle: 'Period, symptoms, pills & more',
+                          onTap: () => Navigator.pushNamed(context, '/reminders'),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Support
+                    _SettingsSection(
+                      title: 'Support',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.help_outline_rounded,
+                          title: 'Help & FAQ',
+                          subtitle: 'Get answers to common questions',
+                          onTap: () => Navigator.pushNamed(context, '/help'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.lightbulb_outline_rounded,
+                          title: 'Health Tips',
+                          subtitle: 'Articles and wellness tips',
+                          onTap: () => Navigator.pushNamed(context, '/health-tips'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.info_outline_rounded,
+                          title: 'About',
+                          subtitle: 'App info, privacy & terms',
+                          onTap: () => Navigator.pushNamed(context, '/about'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // History
+                    _SettingsSection(
+                      title: 'History',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.psychology_rounded,
+                          title: 'Symptom History',
+                          subtitle: 'View your past symptom logs',
+                          onTap: () => Navigator.pushNamed(context, '/symptom-history'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.timeline_rounded,
+                          title: 'Cycle History',
+                          subtitle: 'View your past cycles',
+                          onTap: () => Navigator.pushNamed(context, '/cycle-history'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Emergency
+                    _SettingsSection(
+                      title: 'Emergency',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.emergency_rounded,
+                          title: 'Emergency Contacts',
+                          subtitle: 'Quick access to helplines & contacts',
+                          onTap: () => Navigator.pushNamed(context, '/emergency-contacts'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Danger Zone
+                    _DangerCard(
+                      onTap: () => _showDeleteConfirmation(context, appState),
                     ),
                   ]),
                 ),
