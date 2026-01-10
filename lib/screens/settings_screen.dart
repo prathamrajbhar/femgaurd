@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 import '../utils/app_theme.dart';
-import '../utils/constants.dart';
 
 /// Modern settings and profile screen
 class SettingsScreen extends StatelessWidget {
@@ -172,34 +171,6 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showConsentDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
-        title: Row(
-          children: [
-            Icon(Icons.description_rounded, color: AppColors.primary),
-            const SizedBox(width: 10),
-            const Text('Terms & Disclaimer'),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Text(
-            AppConstants.disclaimerText,
-            style: TextStyle(color: AppColors.textSecondary, height: 1.5),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showDeleteConfirmation(BuildContext context, AppState appState) {
     showDialog(
       context: context,
@@ -364,14 +335,12 @@ class _SettingsTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Widget? trailing;
   final VoidCallback? onTap;
 
   const _SettingsTile({
     required this.icon,
     required this.title,
     required this.subtitle,
-    this.trailing,
     this.onTap,
   });
 
@@ -416,9 +385,9 @@ class _SettingsTile extends StatelessWidget {
                 ],
               ),
             ),
-            trailing ?? (onTap != null 
+            onTap != null 
                 ? Icon(Icons.chevron_right_rounded, color: AppColors.textLight)
-                : const SizedBox()),
+                : const SizedBox(),
           ],
         ),
       ),
@@ -544,47 +513,6 @@ class _ThemeTile extends StatelessWidget {
             Icon(Icons.chevron_right_rounded, color: AppColors.textLight),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Status badge
-class _StatusBadge extends StatelessWidget {
-  final String label;
-  final Color color;
-
-  const _StatusBadge({required this.label, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

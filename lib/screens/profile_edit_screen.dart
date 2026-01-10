@@ -19,7 +19,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   late int _cycleLength;
   late DateTime _lastPeriodDate;
   late String _lifestyleLevel;
-  bool _hasChanges = false;
 
   @override
   void initState() {
@@ -81,7 +80,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     if (picked != null) {
       setState(() {
         _lastPeriodDate = picked;
-        _hasChanges = true;
       });
     }
   }
@@ -175,7 +173,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     onChanged: (value) {
                       setState(() {
                         _age = value.round();
-                        _hasChanges = true;
                       });
                     },
                   ),
@@ -210,7 +207,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     onChanged: (value) {
                       setState(() {
                         _cycleLength = value.round();
-                        _hasChanges = true;
                       });
                     },
                   ),
@@ -278,7 +274,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       onTap: () {
                         setState(() {
                           _lifestyleLevel = level;
-                          _hasChanges = true;
                         });
                         HapticFeedback.selectionClick();
                       },

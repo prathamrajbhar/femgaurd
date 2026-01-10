@@ -52,10 +52,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
         final periodDays = appState.periodDays;
         final nextPeriod = appState.nextPeriodDate;
         
-        // Calculate fertile window (approximate: 5 days before ovulation, ovulation around day 14)
-        final cycleLength = appState.userProfile.cycleLength;
-        final ovulationDay = cycleLength - 14;
-        
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
