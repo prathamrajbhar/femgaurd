@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../services/app_state.dart';
 import '../utils/app_theme.dart';
+import 'daily_logging_screen.dart';
 
 /// Full calendar screen for cycle tracking
 class CalendarScreen extends StatefulWidget {
@@ -167,10 +168,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       final isFertileWindow = _isFertileWindow(date, appState);
                       final isCurrentMonth = date.month == _currentMonth.month;
                       
+                      final hasSymptomLog = appState.symptomLogs.any((log) =>
+                          log.date.year == date.year &&
+                          log.date.month == date.month &&
+                          log.date.day == date.day);
+                      
                       return GestureDetector(
                         onTap: () {
                           setState(() => _selectedDate = date);
                           HapticFeedback.selectionClick();
+                        },
+                        onLongPress: () {
+                          HapticFeedback.mediumImpact();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => DailyLoggingScreen(selectedDate: date),
+                            ),
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.all(2),
@@ -224,6 +239,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                         color: AppColors.accent,
                                         shape: BoxShape.circle,
                                       ),
+                                    ),
+                                  ),
+                                ),
+                              // Symptom log indicator dots
+                              if (hasSymptomLog)
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber,
+                                      shape: BoxShape.circle,
                                     ),
                                   ),
                                 ),
@@ -318,6 +347,39 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     ),
                                   ),
                                 ],
+                              ),
+                            ),
+                            // Quick log button
+                            GestureDetector(
+                              onTap: () {
+                                HapticFeedback.selectionClick();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => DailyLoggingScreen(selectedDate: _selectedDate),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: AppColors.accent,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.add, color: Colors.white, size: 16),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Log',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],

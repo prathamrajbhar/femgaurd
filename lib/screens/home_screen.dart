@@ -6,6 +6,7 @@ import '../utils/app_theme.dart';
 import 'cycle_tracking_screen.dart';
 import 'chat_screen.dart';
 import 'settings_screen.dart';
+import 'insights_home_page.dart';
 
 /// Main home screen with bottom navigation
 class HomeScreen extends StatefulWidget {
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          const _DashboardPage(),
+          const InsightsHomePage(),
           const CycleTrackingScreen(),
           const ChatScreen(),
           const SettingsScreen(),

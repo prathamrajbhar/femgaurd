@@ -39,6 +39,9 @@ import 'screens/pcod_awareness_screen.dart';
 import 'screens/pcos_awareness_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/otp_verification_screen.dart';
+import 'screens/daily_logging_screen.dart';
+import 'screens/community_screen.dart';
+import 'screens/pregnancy_mode_screen.dart';
 
 /// Main entry point for the FemGuard app
 /// A Menstrual & Hormonal Health Guardian Application
@@ -115,6 +118,9 @@ class FemGuardApp extends StatelessWidget {
               '/pcos-awareness': (context) => const PCOSAwarenessScreen(),
               '/login': (context) => const LoginScreen(),
               '/otp-verification': (context) => const OTPVerificationScreen(),
+              '/daily-logging': (context) => const DailyLoggingScreen(),
+              '/community': (context) => const CommunityScreen(),
+              '/pregnancy-mode': (context) => const PregnancyModeScreen(),
             },
           );
         },

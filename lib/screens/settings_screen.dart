@@ -98,6 +98,28 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
 
+                    // Modes & Features (NEW)
+                    _SettingsSection(
+                      title: 'Modes & Features',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.people_rounded,
+                          title: 'Community',
+                          subtitle: 'Anonymous support space',
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/community'),
+                        ),
+                        _SettingsTile(
+                          icon: Icons.pregnant_woman_rounded,
+                          title: 'Pregnancy Mode',
+                          subtitle: 'Track your pregnancy journey',
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/pregnancy-mode'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
                     // Support & Info
                     _SettingsSection(
                       title: 'Support',
