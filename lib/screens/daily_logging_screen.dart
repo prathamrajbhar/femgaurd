@@ -158,17 +158,14 @@ class _DailyLoggingScreenState extends State<DailyLoggingScreen>
     }
   }
 
-  void _showSuccessAnimation() {
+  void _showSuccessAnimation() async {
+    // Show the dialog and store the navigator reference before showing
+    final navigator = Navigator.of(context);
+    
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        Future.delayed(const Duration(milliseconds: 1200), () {
-          if (context.mounted) {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-          }
-        });
+      builder: (dialogContext) {
         return Center(
           child: Container(
             padding: const EdgeInsets.all(32),
@@ -209,6 +206,18 @@ class _DailyLoggingScreenState extends State<DailyLoggingScreen>
         );
       },
     );
+    
+    // Wait for the animation duration OUTSIDE the builder
+    await Future.delayed(const Duration(milliseconds: 1200));
+    
+    // Pop the dialog first, then the screen
+    if (mounted) {
+      navigator.pop(); // Close dialog
+      await Future.delayed(const Duration(milliseconds: 50)); // Small delay between pops
+      if (mounted) {
+        navigator.pop(); // Close the logging screen
+      }
+    }
   }
 
   @override
