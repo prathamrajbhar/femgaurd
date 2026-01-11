@@ -20,10 +20,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late PageController _pageController;
 
   final List<_NavItem> _navItems = [
-    _NavItem(icon: Icons.home_rounded, activeIcon: Icons.home_rounded, label: 'Home'),
-    _NavItem(icon: Icons.calendar_month_outlined, activeIcon: Icons.calendar_month_rounded, label: 'Cycle'),
-    _NavItem(icon: Icons.chat_bubble_outline_rounded, activeIcon: Icons.chat_bubble_rounded, label: 'Chat'),
-    _NavItem(icon: Icons.person_outline_rounded, activeIcon: Icons.person_rounded, label: 'Profile'),
+    _NavItem(
+      icon: Icons.home_rounded,
+      activeIcon: Icons.home_rounded,
+      label: 'Home',
+    ),
+    _NavItem(
+      icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month_rounded,
+      label: 'Cycle',
+    ),
+    _NavItem(
+      icon: Icons.chat_bubble_outline_rounded,
+      activeIcon: Icons.chat_bubble_rounded,
+      label: 'Chat',
+    ),
+    _NavItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      label: 'Profile',
+    ),
   ];
 
   @override
@@ -94,7 +110,8 @@ class _ModernBottomNav extends StatefulWidget {
   State<_ModernBottomNav> createState() => _ModernBottomNavState();
 }
 
-class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderStateMixin {
+class _ModernBottomNavState extends State<_ModernBottomNav>
+    with TickerProviderStateMixin {
   late List<AnimationController> _scaleControllers;
   late List<Animation<double>> _scaleAnimations;
 
@@ -109,9 +126,10 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
       ),
     );
     _scaleAnimations = _scaleControllers.map((controller) {
-      return Tween<double>(begin: 1.0, end: 0.9).animate(
-        CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-      );
+      return Tween<double>(
+        begin: 1.0,
+        end: 0.9,
+      ).animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
     }).toList();
   }
 
@@ -139,9 +157,7 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-      ),
+      decoration: BoxDecoration(color: Colors.transparent),
       child: SafeArea(
         top: false,
         child: Padding(
@@ -177,7 +193,7 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
               children: List.generate(widget.items.length, (index) {
                 final isSelected = index == widget.currentIndex;
                 final item = widget.items[index];
-                
+
                 return GestureDetector(
                   onTapDown: (_) => _onTapDown(index),
                   onTapUp: (_) => _onTapUp(index),
@@ -193,7 +209,7 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        gradient: isSelected 
+                        gradient: isSelected
                             ? LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -205,19 +221,25 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
                             : null,
                         color: isSelected ? null : Colors.transparent,
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: isSelected ? [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.4),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                            spreadRadius: -2,
-                          ),
-                          BoxShadow(
-                            color: AppColors.primaryDark.withValues(alpha: 0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ] : null,
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
+                                  spreadRadius: -2,
+                                ),
+                                BoxShadow(
+                                  color: AppColors.primaryDark.withValues(
+                                    alpha: 0.2,
+                                  ),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ]
+                            : null,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -227,8 +249,8 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
                             duration: AppDurations.fast,
                             child: Icon(
                               isSelected ? item.activeIcon : item.icon,
-                              color: isSelected 
-                                  ? Colors.white 
+                              color: isSelected
+                                  ? Colors.white
                                   : AppColors.textLight,
                               size: isSelected ? 22 : 24,
                             ),
@@ -239,20 +261,22 @@ class _ModernBottomNavState extends State<_ModernBottomNav> with TickerProviderS
                             curve: Curves.easeOutCubic,
                             child: SizedBox(
                               width: isSelected ? null : 0,
-                              child: isSelected ? Row(
-                                children: [
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    item.label,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.3,
-                                    ),
-                                  ),
-                                ],
-                              ) : const SizedBox.shrink(),
+                              child: isSelected
+                                  ? Row(
+                                      children: [
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          item.label,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.3,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
                           ),
                         ],
@@ -346,7 +370,10 @@ class _DashboardPage extends StatelessWidget {
                     child: IconButton(
                       icon: Stack(
                         children: [
-                          Icon(Icons.notifications_none_rounded, color: AppColors.textSecondary),
+                          Icon(
+                            Icons.notifications_none_rounded,
+                            color: AppColors.textSecondary,
+                          ),
                           Positioned(
                             right: 0,
                             top: 0,
@@ -356,13 +383,17 @@ class _DashboardPage extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: AppColors.statusOrange,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: AppColors.surface, width: 1),
+                                border: Border.all(
+                                  color: AppColors.surface,
+                                  width: 1,
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      onPressed: () {},
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/notifications'),
                     ),
                   ),
                 ],
@@ -375,7 +406,7 @@ class _DashboardPage extends StatelessWidget {
                     // Greeting
                     _buildGreeting(context),
                     const SizedBox(height: 24),
-                    
+
                     // Cycle Hero Card
                     _CycleHeroCard(
                       cycleDay: appState.currentCycleDay,
@@ -384,7 +415,7 @@ class _DashboardPage extends StatelessWidget {
                       healthStatus: appState.healthStatus,
                     ),
                     const SizedBox(height: 20),
-                    
+
                     // Quick Stats Row
                     Row(
                       children: [
@@ -408,11 +439,11 @@ class _DashboardPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 28),
-                    
+
                     // Quick Actions Header
                     _SectionHeader(title: 'Quick Actions'),
                     const SizedBox(height: 14),
-                    
+
                     // Quick Actions Grid
                     Row(
                       children: [
@@ -421,8 +452,14 @@ class _DashboardPage extends StatelessWidget {
                             icon: Icons.add_circle_outline_rounded,
                             title: 'Log Symptoms',
                             subtitle: 'Track how you feel',
-                            gradient: [const Color(0xFFFF6B6B), const Color(0xFFFFE66D)],
-                            onTap: () => Navigator.pushNamed(context, '/symptom-logging'),
+                            gradient: [
+                              const Color(0xFFFF6B6B),
+                              const Color(0xFFFFE66D),
+                            ],
+                            onTap: () => Navigator.pushNamed(
+                              context,
+                              '/symptom-logging',
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -431,8 +468,12 @@ class _DashboardPage extends StatelessWidget {
                             icon: Icons.insights_rounded,
                             title: 'View Insights',
                             subtitle: 'AI-powered analysis',
-                            gradient: [const Color(0xFF4FACFE), const Color(0xFF00F2FE)],
-                            onTap: () => Navigator.pushNamed(context, '/insights'),
+                            gradient: [
+                              const Color(0xFF4FACFE),
+                              const Color(0xFF00F2FE),
+                            ],
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/insights'),
                           ),
                         ),
                       ],
@@ -445,8 +486,12 @@ class _DashboardPage extends StatelessWidget {
                             icon: Icons.spa_rounded,
                             title: 'Lifestyle',
                             subtitle: 'Sleep & activity',
-                            gradient: [const Color(0xFFFA709A), const Color(0xFFFEE140)],
-                            onTap: () => Navigator.pushNamed(context, '/lifestyle'),
+                            gradient: [
+                              const Color(0xFFFA709A),
+                              const Color(0xFFFEE140),
+                            ],
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/lifestyle'),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -455,27 +500,32 @@ class _DashboardPage extends StatelessWidget {
                             icon: Icons.bar_chart_rounded,
                             title: 'Reports',
                             subtitle: 'Trends & stats',
-                            gradient: [const Color(0xFF667EEA), const Color(0xFF764BA2)],
-                            onTap: () => Navigator.pushNamed(context, '/reports'),
+                            gradient: [
+                              const Color(0xFF667EEA),
+                              const Color(0xFF764BA2),
+                            ],
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/reports'),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 28),
-                    
+
                     // Health Resources
                     _SectionHeader(title: 'Resources'),
                     const SizedBox(height: 14),
-                    
+
                     _ResourceCard(
                       icon: Icons.shield_outlined,
                       title: 'Risk Awareness',
                       subtitle: 'Understanding health indicators',
                       emoji: '🛡️',
-                      onTap: () => Navigator.pushNamed(context, '/risk-awareness'),
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/risk-awareness'),
                     ),
                     const SizedBox(height: 10),
-                    
+
                     if (appState.shouldShowDoctorSuggestion) ...[
                       _ResourceCard(
                         icon: Icons.local_hospital_outlined,
@@ -500,7 +550,7 @@ class _DashboardPage extends StatelessWidget {
     final hour = DateTime.now().hour;
     String greeting;
     String emoji;
-    
+
     if (hour < 12) {
       greeting = 'Good Morning';
       emoji = '☀️';
@@ -511,7 +561,7 @@ class _DashboardPage extends StatelessWidget {
       greeting = 'Good Evening';
       emoji = '🌙';
     }
-    
+
     return Row(
       children: [
         Expanded(
@@ -523,8 +573,8 @@ class _DashboardPage extends StatelessWidget {
                   Text(
                     greeting,
                     style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Text(emoji, style: const TextStyle(fontSize: 28)),
@@ -534,8 +584,8 @@ class _DashboardPage extends StatelessWidget {
               Text(
                 'Here\'s your health summary',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -546,19 +596,27 @@ class _DashboardPage extends StatelessWidget {
 
   String _getStatusLabel(String status) {
     switch (status) {
-      case 'green': return 'Normal';
-      case 'yellow': return 'Monitor';
-      case 'orange': return 'Consult';
-      default: return 'Normal';
+      case 'green':
+        return 'Normal';
+      case 'yellow':
+        return 'Monitor';
+      case 'orange':
+        return 'Consult';
+      default:
+        return 'Normal';
     }
   }
 
   Color _getStatusColor(String status) {
     switch (status) {
-      case 'green': return AppColors.statusGreen;
-      case 'yellow': return AppColors.statusYellow;
-      case 'orange': return AppColors.statusOrange;
-      default: return AppColors.statusGreen;
+      case 'green':
+        return AppColors.statusGreen;
+      case 'yellow':
+        return AppColors.statusYellow;
+      case 'orange':
+        return AppColors.statusOrange;
+      default:
+        return AppColors.statusGreen;
     }
   }
 }
@@ -588,9 +646,9 @@ class _SectionHeader extends StatelessWidget {
         const SizedBox(width: 10),
         Text(
           title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -682,7 +740,10 @@ class _CycleHeroCard extends StatelessWidget {
                   children: [
                     // Day counter
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(AppRadius.xl),
@@ -729,7 +790,10 @@ class _CycleHeroCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
@@ -770,7 +834,10 @@ class _CycleHeroCard extends StatelessWidget {
                 const SizedBox(height: 20),
                 // Status bar
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 14,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -804,7 +871,10 @@ class _CycleHeroCard extends StatelessWidget {
                       ),
                       const Spacer(),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
@@ -850,19 +920,27 @@ class _CycleHeroCard extends StatelessWidget {
 
   String _getStatusLabel(String status) {
     switch (status) {
-      case 'green': return 'Normal';
-      case 'yellow': return 'Monitor';
-      case 'orange': return 'Consult';
-      default: return 'Normal';
+      case 'green':
+        return 'Normal';
+      case 'yellow':
+        return 'Monitor';
+      case 'orange':
+        return 'Consult';
+      default:
+        return 'Normal';
     }
   }
 
   Color _getStatusColor(String status) {
     switch (status) {
-      case 'green': return AppColors.statusGreen;
-      case 'yellow': return AppColors.statusYellow;
-      case 'orange': return AppColors.statusOrange;
-      default: return AppColors.statusGreen;
+      case 'green':
+        return AppColors.statusGreen;
+      case 'yellow':
+        return AppColors.statusYellow;
+      case 'orange':
+        return AppColors.statusOrange;
+      default:
+        return AppColors.statusGreen;
     }
   }
 }
@@ -902,7 +980,10 @@ class _QuickStatCard extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color.withValues(alpha: 0.2), color.withValues(alpha: 0.1)],
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.1),
+                ],
               ),
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
@@ -1009,10 +1090,7 @@ class _ActionCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               subtitle,
-              style: TextStyle(
-                color: AppColors.textLight,
-                fontSize: 12,
-              ),
+              style: TextStyle(color: AppColors.textLight, fontSize: 12),
             ),
           ],
         ),
@@ -1049,15 +1127,15 @@ class _ResourceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isHighlighted 
-              ? AppColors.statusOrange.withValues(alpha: 0.1) 
+          color: isHighlighted
+              ? AppColors.statusOrange.withValues(alpha: 0.1)
               : AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: isHighlighted 
+          border: isHighlighted
               ? Border.all(color: AppColors.statusOrange.withValues(alpha: 0.3))
               : null,
-          boxShadow: isHighlighted 
-              ? null 
+          boxShadow: isHighlighted
+              ? null
               : [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -1072,8 +1150,9 @@ class _ResourceCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: (isHighlighted ? AppColors.statusOrange : AppColors.primary)
-                    .withValues(alpha: 0.12),
+                color:
+                    (isHighlighted ? AppColors.statusOrange : AppColors.primary)
+                        .withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Center(

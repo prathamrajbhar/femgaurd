@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/chat_message.dart';
 import '../models/cycle_model.dart';
 import '../models/lifestyle_log.dart';
+import '../models/notification_model.dart';
 import '../models/symptom_log.dart';
 import '../models/user_model.dart';
 import '../dummy_data/dummy_data.dart';
@@ -37,6 +38,12 @@ class AppState extends ChangeNotifier {
   // Chat messages
   List<ChatMessage> _chatMessages = [];
   List<ChatMessage> get chatMessages => _chatMessages;
+
+  // In-app notifications
+  List<NotificationItem> _notifications = [];
+  List<NotificationItem> get notifications => _notifications;
+  int get unreadNotificationCount =>
+      _notifications.where((n) => !n.isRead).length;
 
   // Orange alert counter
   int _orangeAlertCount = 0;
@@ -108,6 +115,17 @@ class AppState extends ChangeNotifier {
           .map((json) => ChatMessage.fromJson(jsonDecode(json)))
           .toList();
     }
+
+    // Load notifications
+    final notificationsJson = _prefs.getStringList('notifications');
+    if (notificationsJson != null && notificationsJson.isNotEmpty) {
+      _notifications = notificationsJson
+          .map((json) => NotificationItem.fromJson(jsonDecode(json)))
+          .toList();
+    }
+
+    // Generate contextual notifications on load
+    _generateContextualNotifications();
   }
 
   /// Save all data to local storage
@@ -116,25 +134,30 @@ class AppState extends ChangeNotifier {
     await _prefs.setBool('notificationsEnabled', _notificationsEnabled);
     await _prefs.setInt('orangeAlertCount', _orangeAlertCount);
     await _prefs.setString('userProfile', jsonEncode(_userProfile.toJson()));
-    
+
     await _prefs.setStringList(
       'cycleHistory',
       _cycleHistory.map((c) => jsonEncode(c.toJson())).toList(),
     );
-    
+
     await _prefs.setStringList(
       'symptomLogs',
       _symptomLogs.map((s) => jsonEncode(s.toJson())).toList(),
     );
-    
+
     await _prefs.setStringList(
       'lifestyleLogs',
       _lifestyleLogs.map((l) => jsonEncode(l.toJson())).toList(),
     );
-    
+
     await _prefs.setStringList(
       'chatMessages',
       _chatMessages.map((m) => jsonEncode(m.toJson())).toList(),
+    );
+
+    await _prefs.setStringList(
+      'notifications',
+      _notifications.map((n) => jsonEncode(n.toJson())).toList(),
     );
   }
 
@@ -177,7 +200,9 @@ class AppState extends ChangeNotifier {
     final lastPeriod = _cycleHistory.first.startDate;
     final daysSince = DateTime.now().difference(lastPeriod).inDays;
     final cyclesCompleted = daysSince ~/ _userProfile.cycleLength;
-    return lastPeriod.add(Duration(days: (cyclesCompleted + 1) * _userProfile.cycleLength));
+    return lastPeriod.add(
+      Duration(days: (cyclesCompleted + 1) * _userProfile.cycleLength),
+    );
   }
 
   /// Days until next period
@@ -188,14 +213,16 @@ class AppState extends ChangeNotifier {
   /// Get health status based on recent symptoms
   String get healthStatus {
     if (_symptomLogs.isEmpty) return 'green';
-    
+
     final recentLogs = _symptomLogs.where((log) {
       return DateTime.now().difference(log.date).inDays <= 7;
     }).toList();
 
     if (recentLogs.isEmpty) return 'green';
 
-    final avgSeverity = recentLogs.map((l) => l.averageSeverity).reduce((a, b) => a + b) / recentLogs.length;
+    final avgSeverity =
+        recentLogs.map((l) => l.averageSeverity).reduce((a, b) => a + b) /
+        recentLogs.length;
 
     if (avgSeverity > 6) return 'orange';
     if (avgSeverity > 4) return 'yellow';
@@ -269,11 +296,11 @@ class AppState extends ChangeNotifier {
   /// Add symptom log
   Future<void> addSymptomLog(SymptomLog log) async {
     _symptomLogs.insert(0, log);
-    
+
     if (log.averageSeverity > 6) {
       _orangeAlertCount++;
     }
-    
+
     await _saveToStorage();
     notifyListeners();
   }
@@ -317,6 +344,28 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ==================== Authentication ====================
+
+  /// Check if user is logged in
+  bool get isLoggedIn => _userProfile.isLoggedIn;
+
+  /// Login user with phone number
+  Future<void> login(String phoneNumber) async {
+    _userProfile = _userProfile.copyWith(
+      phoneNumber: phoneNumber,
+      isLoggedIn: true,
+    );
+    await _saveToStorage();
+    notifyListeners();
+  }
+
+  /// Logout user
+  Future<void> logout() async {
+    _userProfile = _userProfile.copyWith(isLoggedIn: false);
+    await _saveToStorage();
+    notifyListeners();
+  }
+
   /// Reset all data
   Future<void> resetAllData() async {
     _userProfile = UserProfile();
@@ -324,6 +373,7 @@ class AppState extends ChangeNotifier {
     _symptomLogs = [];
     _lifestyleLogs = [];
     _chatMessages = [];
+    _notifications = [];
     _orangeAlertCount = 0;
     _notificationsEnabled = true;
     _selectedTheme = ColorTheme.rose;
@@ -343,9 +393,190 @@ class AppState extends ChangeNotifier {
           current = current.add(const Duration(days: 1));
         }
       } else {
-        days.add(DateTime(cycle.startDate.year, cycle.startDate.month, cycle.startDate.day));
+        days.add(
+          DateTime(
+            cycle.startDate.year,
+            cycle.startDate.month,
+            cycle.startDate.day,
+          ),
+        );
       }
     }
     return days;
+  }
+
+  // ==================== Notification Management ====================
+
+  /// Generate contextual notifications based on app data
+  void _generateContextualNotifications() {
+    if (!_notificationsEnabled) return;
+
+    final now = DateTime.now();
+    final existingIds = _notifications.map((n) => n.id).toSet();
+
+    // Period reminder - notify if period is coming in next 3 days
+    if (_cycleHistory.isNotEmpty) {
+      final daysUntil = daysUntilNextPeriod;
+      if (daysUntil >= 0 && daysUntil <= 3) {
+        final reminderId =
+            'period_reminder_${now.year}_${now.month}_${now.day}';
+        if (!existingIds.contains(reminderId)) {
+          _notifications.insert(
+            0,
+            NotificationItem(
+              id: reminderId,
+              title: 'Period Starting Soon',
+              message: daysUntil == 0
+                  ? 'Your period is expected to start today. Be prepared!'
+                  : 'Your period is expected to start in $daysUntil day${daysUntil > 1 ? 's' : ''}. Stock up on essentials!',
+              type: NotificationType.periodReminder,
+              createdAt: now,
+            ),
+          );
+        }
+      }
+    }
+
+    // Symptom logging reminder - if no symptoms logged today
+    final hasLoggedToday = _symptomLogs.any((log) {
+      return log.date.year == now.year &&
+          log.date.month == now.month &&
+          log.date.day == now.day;
+    });
+
+    if (!hasLoggedToday && now.hour >= 18) {
+      final logReminderId =
+          'symptom_reminder_${now.year}_${now.month}_${now.day}';
+      if (!existingIds.contains(logReminderId)) {
+        _notifications.insert(
+          0,
+          NotificationItem(
+            id: logReminderId,
+            title: 'Log Your Symptoms',
+            message:
+                'Don\'t forget to log how you\'re feeling today for better insights.',
+            type: NotificationType.symptomReminder,
+            createdAt: now,
+          ),
+        );
+      }
+    }
+
+    // Health tip notification - once per day
+    final healthTipId = 'health_tip_${now.year}_${now.month}_${now.day}';
+    if (!existingIds.contains(healthTipId)) {
+      final tips = [
+        'Staying hydrated during your cycle can help reduce bloating and fatigue.',
+        'Regular exercise can help alleviate menstrual cramps and improve mood.',
+        'Getting enough sleep (7-8 hours) helps maintain hormonal balance.',
+        'Foods rich in iron can help replenish what\'s lost during menstruation.',
+        'Tracking your symptoms helps identify patterns for better health awareness.',
+        'Stress management techniques like yoga can ease PMS symptoms.',
+        'Limiting caffeine during your period may help reduce breast tenderness.',
+        'Omega-3 fatty acids found in fish may help reduce menstrual pain.',
+      ];
+      final tipIndex = (now.day + now.month) % tips.length;
+      _notifications.insert(
+        0,
+        NotificationItem(
+          id: healthTipId,
+          title: 'Daily Health Tip',
+          message: tips[tipIndex],
+          type: NotificationType.healthTip,
+          createdAt: now,
+        ),
+      );
+    }
+
+    // Doctor suggestion notification if orange alert threshold reached
+    if (shouldShowDoctorSuggestion) {
+      final doctorId = 'doctor_suggestion_$_orangeAlertCount';
+      if (!existingIds.contains(doctorId)) {
+        _notifications.insert(
+          0,
+          NotificationItem(
+            id: doctorId,
+            title: 'Consider Consulting a Doctor',
+            message:
+                'Based on your logged patterns, you may benefit from speaking with a healthcare professional.',
+            type: NotificationType.doctorSuggestion,
+            createdAt: now,
+          ),
+        );
+      }
+    }
+
+    // Hydration reminder during period
+    if (_cycleHistory.isNotEmpty) {
+      final currentDay = currentCycleDay;
+      if (currentDay <= 7) {
+        // During likely period days
+        final hydrationId = 'hydration_${now.year}_${now.month}_${now.day}';
+        if (!existingIds.contains(hydrationId)) {
+          _notifications.insert(
+            0,
+            NotificationItem(
+              id: hydrationId,
+              title: 'Stay Hydrated',
+              message:
+                  'Remember to drink plenty of water today. It helps with bloating and fatigue during your cycle.',
+              type: NotificationType.hydrationReminder,
+              createdAt: now,
+            ),
+          );
+        }
+      }
+    }
+
+    // Keep only last 50 notifications
+    if (_notifications.length > 50) {
+      _notifications = _notifications.take(50).toList();
+    }
+  }
+
+  /// Add a new notification
+  Future<void> addNotification(NotificationItem notification) async {
+    _notifications.insert(0, notification);
+    await _saveToStorage();
+    notifyListeners();
+  }
+
+  /// Mark a notification as read
+  Future<void> markNotificationAsRead(String id) async {
+    final index = _notifications.indexWhere((n) => n.id == id);
+    if (index != -1) {
+      _notifications[index] = _notifications[index].copyWith(isRead: true);
+      await _saveToStorage();
+      notifyListeners();
+    }
+  }
+
+  /// Mark all notifications as read
+  Future<void> markAllNotificationsAsRead() async {
+    _notifications = _notifications
+        .map((n) => n.copyWith(isRead: true))
+        .toList();
+    await _saveToStorage();
+    notifyListeners();
+  }
+
+  /// Delete a notification
+  Future<void> deleteNotification(String id) async {
+    _notifications.removeWhere((n) => n.id == id);
+    await _saveToStorage();
+    notifyListeners();
+  }
+
+  /// Clear all notifications
+  Future<void> clearAllNotifications() async {
+    _notifications.clear();
+    await _saveToStorage();
+    notifyListeners();
+  }
+
+  /// Refresh notifications (regenerate contextual ones)
+  void refreshNotifications() {
+    _generateContextualNotifications();
+    notifyListeners();
   }
 }

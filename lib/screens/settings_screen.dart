@@ -25,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
                     // Profile Card
                     _ProfileCard(appState: appState),
                     const SizedBox(height: 24),
-                    
+
                     // Quick Access - Most used features
                     _SettingsSection(
                       title: 'Quick Access',
@@ -34,18 +34,20 @@ class SettingsScreen extends StatelessWidget {
                           icon: Icons.edit_rounded,
                           title: 'Edit Profile',
                           subtitle: 'Update your health info',
-                          onTap: () => Navigator.pushNamed(context, '/profile-edit'),
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/profile-edit'),
                         ),
                         _SettingsTile(
                           icon: Icons.calendar_month_rounded,
                           title: 'Cycle Calendar',
                           subtitle: 'View full calendar',
-                          onTap: () => Navigator.pushNamed(context, '/calendar'),
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/calendar'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Settings - Theme & Notifications
                     _SettingsSection(
                       title: 'Settings',
@@ -64,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // History & Data
                     _SettingsSection(
                       title: 'History & Data',
@@ -73,24 +75,29 @@ class SettingsScreen extends StatelessWidget {
                           icon: Icons.psychology_rounded,
                           title: 'Symptom History',
                           subtitle: 'View past symptom logs',
-                          onTap: () => Navigator.pushNamed(context, '/symptom-history'),
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/symptom-history'),
                         ),
                         _SettingsTile(
                           icon: Icons.timeline_rounded,
                           title: 'Cycle History',
                           subtitle: 'View past cycles',
-                          onTap: () => Navigator.pushNamed(context, '/cycle-history'),
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/cycle-history'),
                         ),
                         _SettingsTile(
                           icon: Icons.download_rounded,
                           title: 'Export Data',
                           subtitle: 'Download your data',
-                          onTap: () => _showSnackBar(context, 'Data exported successfully!'),
+                          onTap: () => _showSnackBar(
+                            context,
+                            'Data exported successfully!',
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    
+
                     // Support & Info
                     _SettingsSection(
                       title: 'Support',
@@ -105,7 +112,10 @@ class SettingsScreen extends StatelessWidget {
                           icon: Icons.emergency_rounded,
                           title: 'Emergency Contacts',
                           subtitle: 'Quick access helplines',
-                          onTap: () => Navigator.pushNamed(context, '/emergency-contacts'),
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            '/emergency-contacts',
+                          ),
                         ),
                         _SettingsTile(
                           icon: Icons.info_outline_rounded,
@@ -115,8 +125,24 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 16),
+
+                    // Account Section
+                    _SettingsSection(
+                      title: 'Account',
+                      children: [
+                        _SettingsTile(
+                          icon: Icons.logout_rounded,
+                          title: 'Logout',
+                          subtitle: 'Sign out of your account',
+                          onTap: () =>
+                              _showLogoutConfirmation(context, appState),
+                          textColor: Colors.orange.shade700,
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 20),
-                    
+
                     // Danger Zone
                     _DangerCard(
                       onTap: () => _showDeleteConfirmation(context, appState),
@@ -145,14 +171,18 @@ class SettingsScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.md),
               boxShadow: AppColors.primaryShadow(0.3),
             ),
-            child: const Icon(Icons.person_rounded, color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.person_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 14),
           Text(
             'Profile & Settings',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -165,8 +195,53 @@ class SettingsScreen extends StatelessWidget {
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
         margin: const EdgeInsets.all(16),
+      ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context, AppState appState) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.logout_rounded, color: Colors.orange.shade700),
+            const SizedBox(width: 10),
+            const Text('Logout?'),
+          ],
+        ),
+        content: const Text(
+          'Are you sure you want to logout? You will need to verify your phone number again to sign back in.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange.shade700,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              await appState.logout();
+              if (context.mounted) {
+                Navigator.pop(context);
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/login', (route) => false);
+              }
+            },
+            child: const Text('Logout'),
+          ),
+        ],
       ),
     );
   }
@@ -175,7 +250,9 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.xl),
+        ),
         title: Row(
           children: [
             Icon(Icons.warning_rounded, color: AppColors.statusOrange),
@@ -198,7 +275,9 @@ class SettingsScreen extends StatelessWidget {
             onPressed: () {
               appState.resetAllData();
               Navigator.pop(context);
-              Navigator.of(context).pushNamedAndRemoveUntil('/splash', (route) => false);
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil('/splash', (route) => false);
             },
             child: const Text('Delete'),
           ),
@@ -336,16 +415,21 @@ class _SettingsTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onTap;
+  final Color? textColor;
 
   const _SettingsTile({
     required this.icon,
     required this.title,
     required this.subtitle,
     this.onTap,
+    this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveTextColor = textColor ?? AppColors.textPrimary;
+    final effectiveIconColor = textColor ?? AppColors.primary;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -356,10 +440,11 @@ class _SettingsTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.primaryLight,
+                color:
+                    textColor?.withValues(alpha: 0.1) ?? AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
-              child: Icon(icon, color: AppColors.primary, size: 20),
+              child: Icon(icon, color: effectiveIconColor, size: 20),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -369,7 +454,7 @@ class _SettingsTile extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: effectiveTextColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
@@ -377,15 +462,12 @@ class _SettingsTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      color: AppColors.textLight,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: AppColors.textLight, fontSize: 12),
                   ),
                 ],
               ),
             ),
-            onTap != null 
+            onTap != null
                 ? Icon(Icons.chevron_right_rounded, color: AppColors.textLight)
                 : const SizedBox(),
           ],
@@ -441,10 +523,7 @@ class _ToggleTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    color: AppColors.textLight,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: AppColors.textLight, fontSize: 12),
                 ),
               ],
             ),
@@ -470,7 +549,7 @@ class _ThemeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = ThemeColors.forTheme(currentTheme);
-    
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -481,10 +560,16 @@ class _ThemeTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [colors.primary, colors.primaryDark]),
+                gradient: LinearGradient(
+                  colors: [colors.primary, colors.primaryDark],
+                ),
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
-              child: const Icon(Icons.palette_rounded, color: Colors.white, size: 20),
+              child: const Icon(
+                Icons.palette_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -502,10 +587,7 @@ class _ThemeTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     '${currentTheme.emoji} ${currentTheme.displayName}',
-                    style: TextStyle(
-                      color: AppColors.textLight,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: AppColors.textLight, fontSize: 12),
                   ),
                 ],
               ),
@@ -531,7 +613,9 @@ class _DangerCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.statusOrange.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.statusOrange.withValues(alpha: 0.2)),
+        border: Border.all(
+          color: AppColors.statusOrange.withValues(alpha: 0.2),
+        ),
       ),
       child: Row(
         children: [
@@ -541,7 +625,11 @@ class _DangerCard extends StatelessWidget {
               color: AppColors.statusOrange.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
-            child: Icon(Icons.delete_forever_rounded, color: AppColors.statusOrange, size: 20),
+            child: Icon(
+              Icons.delete_forever_rounded,
+              color: AppColors.statusOrange,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -559,10 +647,7 @@ class _DangerCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   'Permanently remove all your data',
-                  style: TextStyle(
-                    color: AppColors.textLight,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: AppColors.textLight, fontSize: 12),
                 ),
               ],
             ),
@@ -630,7 +715,11 @@ class _ThemePickerSheet extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
-                  child: const Icon(Icons.palette_rounded, color: Colors.white, size: 22),
+                  child: const Icon(
+                    Icons.palette_rounded,
+                    color: Colors.white,
+                    size: 22,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Column(
@@ -654,73 +743,80 @@ class _ThemePickerSheet extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 14,
-                mainAxisSpacing: 14,
-                childAspectRatio: 1.3,
-              ),
-              itemCount: ColorTheme.values.length,
-              itemBuilder: (context, index) {
-                final theme = ColorTheme.values[index];
-                final isSelected = theme == appState.selectedTheme;
-                final colors = ThemeColors.forTheme(theme);
-                
-                return GestureDetector(
-                  onTap: () {
-                    HapticFeedback.selectionClick();
-                    appState.setTheme(theme);
-                    Navigator.pop(context);
-                  },
-                  child: AnimatedContainer(
-                    duration: AppDurations.fast,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                      border: Border.all(
-                        color: isSelected ? colors.primary : AppColors.border,
-                        width: isSelected ? 2 : 1,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                  childAspectRatio: 1.3,
+                ),
+                itemCount: ColorTheme.values.length,
+                itemBuilder: (context, index) {
+                  final theme = ColorTheme.values[index];
+                  final isSelected = theme == appState.selectedTheme;
+                  final colors = ThemeColors.forTheme(theme);
+
+                  return GestureDetector(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      appState.setTheme(theme);
+                      Navigator.pop(context);
+                    },
+                    child: AnimatedContainer(
+                      duration: AppDurations.fast,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
+                        border: Border.all(
+                          color: isSelected ? colors.primary : AppColors.border,
+                          width: isSelected ? 2 : 1,
+                        ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: colors.primary.withValues(alpha: 0.2),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ]
+                            : null,
                       ),
-                      boxShadow: isSelected 
-                          ? [BoxShadow(
-                              color: colors.primary.withValues(alpha: 0.2),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            )]
-                          : null,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Emoji
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [colors.primary, colors.primaryDark],
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Emoji
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [colors.primary, colors.primaryDark],
+                              ),
+                              shape: BoxShape.circle,
                             ),
-                            shape: BoxShape.circle,
+                            child: Center(
+                              child: Text(
+                                theme.emoji,
+                                style: const TextStyle(fontSize: 22),
+                              ),
+                            ),
                           ),
-                          child: Center(
-                            child: Text(theme.emoji, style: const TextStyle(fontSize: 22)),
+                          const SizedBox(height: 10),
+                          Text(
+                            theme.displayName,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: isSelected
+                                  ? colors.primaryDark
+                                  : AppColors.textPrimary,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          theme.displayName,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: isSelected ? colors.primaryDark : AppColors.textPrimary,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(height: 20),

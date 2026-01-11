@@ -24,49 +24,35 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     // Logo animation
     _logoController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     _logoScale = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _logoController,
-        curve: Curves.elasticOut,
-      ),
+      CurvedAnimation(parent: _logoController, curve: Curves.elasticOut),
     );
-    
+
     _logoRotation = Tween<double>(begin: -0.5, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _logoController,
-        curve: Curves.easeOutBack,
-      ),
+      CurvedAnimation(parent: _logoController, curve: Curves.easeOutBack),
     );
-    
+
     // Content animation
     _contentController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    
+
     _fadeIn = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: Curves.easeIn,
-      ),
+      CurvedAnimation(parent: _contentController, curve: Curves.easeIn),
     );
-    
-    _slideUp = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: Curves.easeOut,
-      ),
-    );
+
+    _slideUp = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _contentController, curve: Curves.easeOut),
+        );
 
     // Start animations
     _logoController.forward();
@@ -84,29 +70,35 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigateToNextScreen() {
     final appState = context.read<AppState>();
-    
+
     String route;
-    
-    // Check if user has completed the full setup process
-    final hasCompletedSetup = appState.userProfile.hasCompletedOnboarding && 
-                               appState.userProfile.hasAcceptedConsent;
-    
-    if (!hasCompletedSetup) {
-      // First time user or incomplete setup - check where to resume
-      if (!appState.userProfile.hasAcceptedConsent) {
-        route = '/onboarding';
-      } else {
-        route = '/profile-setup';
-      }
+
+    // Check if user is logged in first
+    if (!appState.isLoggedIn) {
+      route = '/login';
     } else {
-      // Returning user - go to home
-      // If no cycle data exists, initialize with demo data for UI purposes
-      if (appState.cycleHistory.isEmpty) {
-        appState.initializeDummyData();
+      // Check if user has completed the full setup process
+      final hasCompletedSetup =
+          appState.userProfile.hasCompletedOnboarding &&
+          appState.userProfile.hasAcceptedConsent;
+
+      if (!hasCompletedSetup) {
+        // First time user or incomplete setup - check where to resume
+        if (!appState.userProfile.hasAcceptedConsent) {
+          route = '/onboarding';
+        } else {
+          route = '/profile-setup';
+        }
+      } else {
+        // Returning user - go to home
+        // If no cycle data exists, initialize with demo data for UI purposes
+        if (appState.cycleHistory.isEmpty) {
+          appState.initializeDummyData();
+        }
+        route = '/home';
       }
-      route = '/home';
     }
-    
+
     Navigator.of(context).pushReplacementNamed(route);
   }
 
@@ -192,7 +184,9 @@ class _SplashScreenState extends State<SplashScreen>
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.4),
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.4,
+                                    ),
                                     blurRadius: 30,
                                     spreadRadius: 5,
                                     offset: const Offset(0, 10),
@@ -227,7 +221,8 @@ class _SplashScreenState extends State<SplashScreen>
                               ).createShader(bounds),
                               child: Text(
                                 AppConstants.appName,
-                                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                style: Theme.of(context).textTheme.displayMedium
+                                    ?.copyWith(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 1,
@@ -236,15 +231,21 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                             const SizedBox(height: 12),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.primaryLight.withValues(alpha: 0.5),
+                                color: AppColors.primaryLight.withValues(
+                                  alpha: 0.5,
+                                ),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
                                 AppConstants.appTagline,
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
                                       color: AppColors.primaryDark,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -273,9 +274,8 @@ class _SplashScreenState extends State<SplashScreen>
                           const SizedBox(height: 16),
                           Text(
                             'Loading your data...',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(color: AppColors.textSecondary),
                           ),
                         ],
                       ),
@@ -303,10 +303,7 @@ class _DecorativeCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
 }

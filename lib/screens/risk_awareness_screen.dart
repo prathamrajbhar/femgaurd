@@ -11,9 +11,7 @@ class RiskAwarenessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Risk Awareness'),
-      ),
+      appBar: AppBar(title: const Text('Risk Awareness')),
       body: Consumer<AppState>(
         builder: (context, appState, child) {
           return SingleChildScrollView(
@@ -68,7 +66,7 @@ class RiskAwarenessScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Alert counter
                 Card(
                   color: AppColors.statusOrange.withValues(alpha: 0.1),
@@ -79,10 +77,15 @@ class RiskAwarenessScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.statusOrange.withValues(alpha: 0.2),
+                            color: AppColors.statusOrange.withValues(
+                              alpha: 0.2,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Text('🟠', style: TextStyle(fontSize: 24)),
+                          child: const Text(
+                            '🟠',
+                            style: TextStyle(fontSize: 24),
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -91,9 +94,8 @@ class RiskAwarenessScreen extends StatelessWidget {
                             children: [
                               Text(
                                 'Orange Alert Counter',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                               Text(
@@ -122,9 +124,8 @@ class RiskAwarenessScreen extends StatelessWidget {
                               ),
                               Text(
                                 '${appState.orangeAlertCount}',
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -139,33 +140,54 @@ class RiskAwarenessScreen extends StatelessWidget {
                     child: Card(
                       color: AppColors.statusOrange,
                       child: ListTile(
-                        leading: const Icon(Icons.local_hospital, color: Colors.white),
+                        leading: const Icon(
+                          Icons.local_hospital,
+                          color: Colors.white,
+                        ),
                         title: const Text(
                           'Consider Consulting a Doctor',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         subtitle: Text(
                           'View suggested healthcare providers',
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.8),
+                          ),
                         ),
-                        trailing: const Icon(Icons.arrow_forward, color: Colors.white),
+                        trailing: const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
                         onTap: () => Navigator.pushNamed(context, '/doctors'),
                       ),
                     ),
                   ),
                 const SizedBox(height: 24),
-                
+
+                // PCOD/PCOS Awareness Navigation
+                Text(
+                  'PCOD / PCOS Awareness',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 12),
+                _buildAwarenessNavigationCard(context),
+                const SizedBox(height: 24),
+
                 // Status levels explanation
                 Text(
                   'Understanding Status Levels',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 12),
-                
+
                 _StatusExplanationCard(
                   status: 'green',
                   title: 'Normal',
-                  description: 'Your symptoms and patterns are within typical ranges. Continue tracking for ongoing awareness.',
+                  description:
+                      'Your symptoms and patterns are within typical ranges. Continue tracking for ongoing awareness.',
                   tips: [
                     'Keep logging regularly',
                     'Maintain healthy habits',
@@ -173,11 +195,12 @@ class RiskAwarenessScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                
+
                 _StatusExplanationCard(
                   status: 'yellow',
                   title: 'Monitor',
-                  description: 'Some patterns may need attention. This is an awareness indicator, not a diagnosis.',
+                  description:
+                      'Some patterns may need attention. This is an awareness indicator, not a diagnosis.',
                   tips: [
                     'Pay attention to recurring symptoms',
                     'Consider lifestyle adjustments',
@@ -185,11 +208,12 @@ class RiskAwarenessScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
-                
+
                 _StatusExplanationCard(
                   status: 'orange',
                   title: 'Consider Consultation',
-                  description: 'Based on your logged patterns, you may benefit from speaking with a healthcare professional.',
+                  description:
+                      'Based on your logged patterns, you may benefit from speaking with a healthcare professional.',
                   tips: [
                     'Document your symptoms',
                     'Prepare questions for your doctor',
@@ -197,14 +221,16 @@ class RiskAwarenessScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Disclaimer
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.secondary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: AppColors.secondary.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -212,9 +238,8 @@ class RiskAwarenessScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         'Important Reminder',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -233,16 +258,127 @@ class RiskAwarenessScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildAwarenessNavigationCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    Icons.health_and_safety_rounded,
+                    color: colorScheme.primary,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Learn About PCOD & PCOS',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Educational awareness information',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/pcod-awareness'),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: colorScheme.primary),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'View PCOD Awareness',
+                      style: TextStyle(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/pcos-awareness'),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: colorScheme.tertiary),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'View PCOS Awareness',
+                      style: TextStyle(
+                        color: colorScheme.tertiary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   List<Color> _getGradientColors(String status) {
     switch (status) {
       case 'green':
-        return [AppColors.statusGreen, AppColors.statusGreen.withValues(alpha: 0.7)];
+        return [
+          AppColors.statusGreen,
+          AppColors.statusGreen.withValues(alpha: 0.7),
+        ];
       case 'yellow':
-        return [AppColors.statusYellow, AppColors.statusYellow.withValues(alpha: 0.7)];
+        return [
+          AppColors.statusYellow,
+          AppColors.statusYellow.withValues(alpha: 0.7),
+        ];
       case 'orange':
-        return [AppColors.statusOrange, AppColors.statusOrange.withValues(alpha: 0.7)];
+        return [
+          AppColors.statusOrange,
+          AppColors.statusOrange.withValues(alpha: 0.7),
+        ];
       default:
-        return [AppColors.statusGreen, AppColors.statusGreen.withValues(alpha: 0.7)];
+        return [
+          AppColors.statusGreen,
+          AppColors.statusGreen.withValues(alpha: 0.7),
+        ];
     }
   }
 
@@ -315,30 +451,32 @@ class _StatusExplanationCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              description,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            Text(description, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 12),
             Text(
               'Tips:',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            ...tips.map((tip) => Padding(
-                  padding: const EdgeInsets.only(left: 8, top: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('• '),
-                      Expanded(
-                        child: Text(tip, style: Theme.of(context).textTheme.bodySmall),
+            ...tips.map(
+              (tip) => Padding(
+                padding: const EdgeInsets.only(left: 8, top: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('• '),
+                    Expanded(
+                      child: Text(
+                        tip,
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
-                    ],
-                  ),
-                )),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

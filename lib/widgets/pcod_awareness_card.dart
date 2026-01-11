@@ -5,7 +5,7 @@ import '../services/hormonal_pattern_analyzer.dart';
 import '../utils/app_theme.dart';
 
 /// PCOD/PCOS Risk Awareness Card Widget
-/// 
+///
 /// This widget displays hormonal pattern analysis results for awareness purposes only.
 /// It does NOT provide medical diagnosis.
 class PCODAwarenessCard extends StatelessWidget {
@@ -29,17 +29,18 @@ class PCODAwarenessCard extends StatelessWidget {
             // Section Header
             _buildSectionHeader(context),
             const SizedBox(height: 14),
-            
+
             // Main Analysis Card
             _buildMainCard(context, result, colorScheme),
-            
-            if (result.hasEnoughData && result.contributingFactors.isNotEmpty) ...[
+
+            if (result.hasEnoughData &&
+                result.contributingFactors.isNotEmpty) ...[
               const SizedBox(height: 16),
               _buildFactorsCard(context, result),
             ],
-            
+
             const SizedBox(height: 16),
-            
+
             // Mandatory Disclaimer
             _buildDisclaimer(context),
           ],
@@ -50,7 +51,7 @@ class PCODAwarenessCard extends StatelessWidget {
 
   Widget _buildSectionHeader(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Row(
       children: [
         Container(
@@ -66,10 +67,7 @@ class PCODAwarenessCard extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        Text(
-          'PCOD / PCOS Awareness',
-          style: theme.textTheme.titleLarge,
-        ),
+        Text('PCOD / PCOS Awareness', style: theme.textTheme.titleLarge),
       ],
     );
   }
@@ -101,7 +99,10 @@ class PCODAwarenessCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: _getScoreColor(result.score, colorScheme).withValues(alpha: 0.12),
+                  color: _getScoreColor(
+                    result.score,
+                    colorScheme,
+                  ).withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
                 child: Center(
@@ -150,15 +151,84 @@ class PCODAwarenessCard extends StatelessWidget {
               height: 1.5,
             ),
           ),
+          const SizedBox(height: 16),
+          // Navigation buttons to detailed awareness screens
+          _buildNavigationButtons(context, result),
         ],
       ),
+    );
+  }
+
+  Widget _buildNavigationButtons(
+    BuildContext context,
+    HormonalPatternResult result,
+  ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.pushNamed(context, '/pcod-awareness'),
+            icon: Icon(
+              Icons.info_outline_rounded,
+              size: 18,
+              color: colorScheme.primary,
+            ),
+            label: Text(
+              'View PCOD Awareness',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                color: colorScheme.primary.withValues(alpha: 0.5),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.pushNamed(context, '/pcos-awareness'),
+            icon: Icon(
+              Icons.info_outline_rounded,
+              size: 18,
+              color: colorScheme.tertiary,
+            ),
+            label: Text(
+              'View PCOS Awareness',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: colorScheme.tertiary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                color: colorScheme.tertiary.withValues(alpha: 0.5),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildScoreIndicator(int score, ColorScheme colorScheme) {
     // Max expected score is around 20
     final normalizedScore = (score / 20).clamp(0.0, 1.0);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -167,7 +237,9 @@ class PCODAwarenessCard extends StatelessWidget {
           child: LinearProgressIndicator(
             value: normalizedScore,
             backgroundColor: colorScheme.surfaceContainerHighest,
-            valueColor: AlwaysStoppedAnimation(_getScoreColor(score, colorScheme)),
+            valueColor: AlwaysStoppedAnimation(
+              _getScoreColor(score, colorScheme),
+            ),
             minHeight: 6,
           ),
         ),

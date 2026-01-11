@@ -35,18 +35,22 @@ import 'screens/symptom_history_screen.dart';
 import 'screens/cycle_history_screen.dart';
 import 'screens/health_tips_screen.dart';
 import 'screens/emergency_contacts_screen.dart';
+import 'screens/pcod_awareness_screen.dart';
+import 'screens/pcos_awareness_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/otp_verification_screen.dart';
 
 /// Main entry point for the FemGuard app
 /// A Menstrual & Hormonal Health Guardian Application
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -54,18 +58,18 @@ void main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  
+
   // Initialize app state with local storage
   final appState = AppState();
   await appState.initialize();
-  
+
   runApp(FemGuardApp(appState: appState));
 }
 
 /// Root application widget
 class FemGuardApp extends StatelessWidget {
   final AppState appState;
-  
+
   const FemGuardApp({super.key, required this.appState});
 
   @override
@@ -105,7 +109,12 @@ class FemGuardApp extends StatelessWidget {
               '/symptom-history': (context) => const SymptomHistoryScreen(),
               '/cycle-history': (context) => const CycleHistoryScreen(),
               '/health-tips': (context) => const HealthTipsScreen(),
-              '/emergency-contacts': (context) => const EmergencyContactsScreen(),
+              '/emergency-contacts': (context) =>
+                  const EmergencyContactsScreen(),
+              '/pcod-awareness': (context) => const PCODAwarenessScreen(),
+              '/pcos-awareness': (context) => const PCOSAwarenessScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/otp-verification': (context) => const OTPVerificationScreen(),
             },
           );
         },
@@ -113,4 +122,3 @@ class FemGuardApp extends StatelessWidget {
     );
   }
 }
-

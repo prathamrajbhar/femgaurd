@@ -711,7 +711,7 @@ class _HormonalToggleItem extends StatelessWidget {
               value: isEnabled,
               onChanged: onChanged,
               activeTrackColor: theme.colorScheme.primary,
-              thumbColor: WidgetStatePropertyAll(theme.colorScheme.onPrimary),
+              activeThumbColor: theme.colorScheme.onPrimary,
             ),
           ],
         ),

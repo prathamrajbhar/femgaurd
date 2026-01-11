@@ -1,5 +1,7 @@
 /// User profile model for storing user data
 class UserProfile {
+  final String? phoneNumber;
+  final bool isLoggedIn;
   final int? age;
   final int cycleLength;
   final DateTime? lastPeriodDate;
@@ -8,6 +10,8 @@ class UserProfile {
   final bool hasAcceptedConsent;
 
   UserProfile({
+    this.phoneNumber,
+    this.isLoggedIn = false,
     this.age,
     this.cycleLength = 28,
     this.lastPeriodDate,
@@ -17,6 +21,8 @@ class UserProfile {
   });
 
   UserProfile copyWith({
+    String? phoneNumber,
+    bool? isLoggedIn,
     int? age,
     int? cycleLength,
     DateTime? lastPeriodDate,
@@ -25,11 +31,14 @@ class UserProfile {
     bool? hasAcceptedConsent,
   }) {
     return UserProfile(
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       age: age ?? this.age,
       cycleLength: cycleLength ?? this.cycleLength,
       lastPeriodDate: lastPeriodDate ?? this.lastPeriodDate,
       lifestyleLevel: lifestyleLevel ?? this.lifestyleLevel,
-      hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      hasCompletedOnboarding:
+          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       hasAcceptedConsent: hasAcceptedConsent ?? this.hasAcceptedConsent,
     );
   }
@@ -37,6 +46,8 @@ class UserProfile {
   /// Convert to JSON
   Map<String, dynamic> toJson() {
     return {
+      'phoneNumber': phoneNumber,
+      'isLoggedIn': isLoggedIn,
       'age': age,
       'cycleLength': cycleLength,
       'lastPeriodDate': lastPeriodDate?.toIso8601String(),
@@ -49,10 +60,12 @@ class UserProfile {
   /// Create from JSON
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
+      phoneNumber: json['phoneNumber'] as String?,
+      isLoggedIn: json['isLoggedIn'] as bool? ?? false,
       age: json['age'] as int?,
       cycleLength: json['cycleLength'] as int? ?? 28,
-      lastPeriodDate: json['lastPeriodDate'] != null 
-          ? DateTime.parse(json['lastPeriodDate'] as String) 
+      lastPeriodDate: json['lastPeriodDate'] != null
+          ? DateTime.parse(json['lastPeriodDate'] as String)
           : null,
       lifestyleLevel: json['lifestyleLevel'] as String? ?? 'Medium',
       hasCompletedOnboarding: json['hasCompletedOnboarding'] as bool? ?? false,
