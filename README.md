@@ -28,13 +28,13 @@
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="screenshot/ss_1.jpg" alt="Home Dashboard" width="200"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="screenshot/ss_2.jpg" alt="Symptom Logging" width="200"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="screenshot/ss_3.jpg" alt="Cycle Tracking" width="200"/>
-  &nbsp;&nbsp;&nbsp;
-  <img src="screenshot/ss_4.jpg" alt="AI Chat Companion" width="200"/>
+  <img src="screenshot/ss_1.jpg" alt="Home Dashboard" width="150"/>
+  &nbsp;&nbsp;
+  <img src="screenshot/ss_2.jpg" alt="Symptom Logging" width="150"/>
+  &nbsp;&nbsp;
+  <img src="screenshot/ss_3.jpg" alt="Cycle Tracking" width="150"/>
+  &nbsp;&nbsp;
+  <img src="screenshot/ss_4.jpg" alt="AI Chat Companion" width="150"/>
 </p>
 
 <p align="center">
