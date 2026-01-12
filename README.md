@@ -27,22 +27,9 @@
 
 ## 📸 Screenshots
 
-<p align="center">
-  <img src="screenshot/ss_1.jpg" alt="Home Dashboard" width="150"/>
-  &nbsp;&nbsp;
-  <img src="screenshot/ss_2.jpg" alt="Symptom Logging" width="150"/>
-  &nbsp;&nbsp;
-  <img src="screenshot/ss_3.jpg" alt="Cycle Tracking" width="150"/>
-  &nbsp;&nbsp;
-  <img src="screenshot/ss_4.jpg" alt="AI Chat Companion" width="150"/>
-</p>
-
-<p align="center">
-  <b>Home Dashboard</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Symptom Logging</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>Cycle Tracking</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <b>AI Chat Companion</b>
-</p>
+|                Home Dashboard                |               Symptom Logging                |                Cycle Tracking                |              AI Chat Companion               |
+| :------------------------------------------: | :------------------------------------------: | :------------------------------------------: | :------------------------------------------: |
+| <img src="screenshot/ss_1.jpg" width="150"/> | <img src="screenshot/ss_2.jpg" width="150"/> | <img src="screenshot/ss_3.jpg" width="150"/> | <img src="screenshot/ss_4.jpg" width="150"/> |
 
 ---
 
